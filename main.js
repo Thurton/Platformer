@@ -36,13 +36,7 @@ var TILESET_PADDING = 2;
 var TILESET_SPACING = 2;
 var TILESET_COUNT_X = 14;
 var TILESET_COUNT_Y = 14;
-var METER = TILE;
-var GRAVITY = METER * 9.8 * 6;
-var MAXDX = METER * 10;
-var MAXDY = METER * 15;
-var ACCEL = MAXDX * 2;
-var FRICTION = MAXDX * 6;
-var JUMP = METER * 1500;
+
 
 
 
@@ -128,8 +122,8 @@ function initialize() {
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++) {
 		cells[layerIdx] = [];
 		var idx = 0;
-		for(var y = 0; y < level1.layers[layerIdx].height; y++){
-			cells[layerIdx][y] =[];
+		for(var y = 0; y < level1.layers[layerIdx].height; y++) {
+		cells[layerIdx][y] = [];
 			for(var x = 0; x < level1.layers[layerIdx].width; x++){
 				if(level1.layers[layerIdx].data[idx] !=0) {
 					

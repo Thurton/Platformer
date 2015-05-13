@@ -20,7 +20,13 @@ var Player = function() {
 
 Player.prototype.update = function(deltaTime)
 {
-	
+var METER = TILE;
+var GRAVITY = METER * 9.8 * 6;
+var MAXDX = METER * 10;
+var MAXDY = METER * 15;
+var ACCEL = MAXDX * 2;
+var FRICTION = MAXDX * 6;
+var JUMP = METER * 1500;
 		
 	var left = false;
 	var right = false;
@@ -112,6 +118,7 @@ else if (this.velocity.y < 0) {
 			this.velocity.x = 0;
 		}
 	}
+	player.falling = !(celldown || (nx&&celldiag));
 }
 
 
@@ -121,7 +128,6 @@ Player.prototype.draw = function()
 {
 	context.save();
 		context.translate(this.position.x, this.position.y);
-		context.rotate(this.rotation);
 		context.drawImage(this.image, - this.width/2, - this.height/2);
 	context.restore();
 	
