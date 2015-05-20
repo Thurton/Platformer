@@ -46,9 +46,11 @@ var Player = function() {
 	this.jumping = false;
 	
 	this.direction = LEFT;
-	var PLAYER_SPEED = 300;
+	
+	this.cooldownTimer=0;
+	
 };
-
+var PLAYER_SPEED = 300;
 Player.prototype.update = function(deltaTime)
 {
 	if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true)
@@ -181,7 +183,18 @@ else if (this.velocity.y < 0) {
 			this.velocity.x = 0;
 		}
 	}
-	//player.falling = !(celldown || (nx&&celldiag));
+	if(keyboard.isKeyDown(keyboard.KEY_UP)== true){
+		jump=ture;
+	}
+	if(this.cooldownTimer>0)
+	{
+		thiscooldownTimer -=deltaTime;
+	}
+	if(keyboard.isKeyDown(keyboard.KEY_SPACE)== true&&this.cooldownTImer <=0){
+		sfxFire.play();
+		this.cooldownTimer=0.3;
+		
+	}
 }
 
 
@@ -189,7 +202,6 @@ else if (this.velocity.y < 0) {
 
 Player.prototype.draw = function()
 {
-	context.drawImage(this.image,
-	this.position.x - worldOffsetX, this.position.y);
+	this.sprite.draw(context, this.position.x - worldOffsetX, this.position.y);
 	
 }
