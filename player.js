@@ -46,11 +46,22 @@ var Player = function() {
 	this.jumping = false;
 	
 	this.direction = LEFT;
-	
+	var PLAYER_SPEED = 300;
 };
 
 Player.prototype.update = function(deltaTime)
 {
+	if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true)
+	{
+		this.x -= PLAYER_SPEED * deltaTime;
+	}
+	if(keyboard.isKeyDown(keyboard.KEY_RIGHT) ==- true)
+	{
+		this.x += PLAYER_SPEED * deltaTIme;
+	}
+
+
+
 	this.sprite.update(deltaTime);
 
 	var left = false;
@@ -178,6 +189,7 @@ else if (this.velocity.y < 0) {
 
 Player.prototype.draw = function()
 {
-this.sprite.draw(context, this.position.x, this.position.y);
+	context.drawImage(this.image,
+	this.position.x - worldOffsetX, this.position.y);
 	
 }
