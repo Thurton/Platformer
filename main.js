@@ -26,10 +26,13 @@ var SCREEN_HEIGHT = canvas.height;
 var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
-var LAYER_COUNT = 2;
+var LAYER_COUNT = 3;
+var LAYER_BACKGROUND = 1;
 var LAYER_PLATFORMS = 0;
-var LAYER_LADDERS = 1;
-var MAP = { tw: 1000, th: 500 };
+var LAYER_LADDERS = 2;
+var LAYER_OBJECT_ENEMIES = 3;
+var LAYER_OBJECT_TRIGGERS = 4;
+var MAP = { tw: 60, th: 15 };
 var TILE = 35;
 var TILESET_TILE = TILE * 2;
 var TILESET_PADDING = 2;
@@ -45,6 +48,8 @@ var FRICTION = MAXDX * 6;
 var JUMP = METER * 1500;
 var score =0;
 var lives = 3;
+var ENEMY_MAXDX = METER * 5;
+var ENEMY_ACCEL = ENEMY_MAXDX * 2;
 		
 
 
@@ -179,7 +184,7 @@ function initialize() {
 			buffer: true,
 			volume: 0.5
 		});
-		musicBackground.play();
+		//musicBackground.play();
 		
 		sfxFire = new Howl(
 		{
