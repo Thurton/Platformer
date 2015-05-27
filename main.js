@@ -27,8 +27,8 @@ var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
 var LAYER_COUNT = 3;
-var LAYER_BACKGROUND = 1;
-var LAYER_PLATFORMS = 0;
+var LAYER_BACKGROUND = 0;
+var LAYER_PLATFORMS = 1;
 var LAYER_LADDERS = 2;
 var LAYER_OBJECT_ENEMIES = 3;
 var LAYER_OBJECT_TRIGGERS = 4;
@@ -51,7 +51,8 @@ var lives = 3;
 var ENEMY_MAXDX = METER * 5;
 var ENEMY_ACCEL = ENEMY_MAXDX * 2;
 var enemies = [];
-		
+var bullets = [];	
+var shootTimer = .02	
 
 
 
@@ -59,15 +60,14 @@ var enemies = [];
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
 
-//var zombie = document.createElement("img");
-//zombie.src = "zombie.png";
+
 
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
 
 
 var player = new Player();
-//var enemy = new Enemy();
+
 var keyboard = new Keyboard();
 
 function cellAtPixelCoord(layer, x, y)
@@ -123,11 +123,11 @@ if(startX < -1)
 }
 if(startX > MAP.tw - maxTiles)
 {
-	startX =MAP.tw - maxTiles + 1;
+	startX = MAP.tw - maxTiles + 1;
 	offsetX = TILE;
 }
 
-worldOffserX = startX * TILE + offsetX;
+worldOffsetX = startX * TILE + offsetX;
 
 
  for( var layerIdx=0; layerIdx < LAYER_COUNT; layerIdx++ )
@@ -143,9 +143,12 @@ worldOffserX = startX * TILE + offsetX;
  // the tiles in the Tiled map are base 1 (meaning a value of 0 means no tile), so subtract one from the tileset id to get the
  // correct tile
  var tileIndex = level1.layers[layerIdx].data[idx] - 1;
- var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
- var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
- context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE, (y-1)*TILE, TILESET_TILE, TILESET_TILE);
+ var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * 
+		(TILESET_TILE + TILESET_SPACING);
+ var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * 
+		(TILESET_TILE + TILESET_SPACING);
+ context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE,
+(x-startX)*TILE - offsetX,(y-1)*TILE, TILESET_TILE, TILESET_TILE);
  }
  idx++;
  }
@@ -157,26 +160,45 @@ var cells = [];
 var musicBackground;
 var sfxFire;
 function initialize() {
-	idx =0;
-	for(var y =0; y < level1.layers[LAYER_OBJECT_ENEMIES].height; y++){
-		for(var x =0; x < level1.layers[LAYER_OBJECT_ENEMIES].width; x++){
-		if(level1.layers[LAYER_OBJECT_ENEMIES].data[idx] != 0) {
-				var px = tileToPixel(x);
-				var py = tileToPixel(y);
-				var e = new Enemy (px, py);
-				enemies.push(e);
+	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++) {
+		cells[layerIdx] = [];
+		var idx = 0;
+		for(var y = 0; y < level1.layers[layerIdx].height; y++) {
+		cells[layerIdx][y] = [];
+			for(var x = 0; x < level1.layers[layerIdx].width; x++){
+				if(level1.layers[layerIdx].data[idx] !=0) {
+					
+					cells[layerIdx][y][x] = 1;
+					cells[layerIdx][y-1][x] = 1;
+					cells[layerIdx][y-1][x+1] = 1;
+					cells[layerIdx][y][x+1] = 1;
+				}
+				else if(cells[layerIdx][y][x] != 1){
+					cells[layerIdx][y][x]= 0;
+				}
+				idx++;
+				}
 			}
-			idx++;
 		}
-	}
-		
+		idx = 0;
+for(var y = 0; y < level1.layers[LAYER_OBJECT_ENEMIES].height; y++) {
+for(var x = 0; x < level1.layers[LAYER_OBJECT_ENEMIES].width; x++) {
+if(level1.layers[LAYER_OBJECT_ENEMIES].data[idx] != 0) {
+var px = tileToPixel(x);
+var py = tileToPixel(y);
+var e = new Enemy(px, py);
+enemies.push(e);
+}
+idx++;
+}
+} 
 		
 		musicBackground = new Howl(
 		{
 			urls: ["background.ogg"],
 			loop : true,
 			buffer: true,
-			volume: 0.5
+			volume: 0.3
 		});
 		//musicBackground.play();
 		
@@ -186,7 +208,7 @@ function initialize() {
 			buffer: true,
 			volume: 1,
 			onend: function(){
-				isSfxPlaying = false;
+				issfxPlaying = false;
 			}
 		});
 	}
@@ -204,12 +226,52 @@ function run()
 	
 	player.update(deltaTime);
 	
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].update(deltaTime);
+	}
+	
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].draw(deltaTime);
+	}
+	
+if(shootTimer > 0)
+		shootTimer -= deltaTime;
+	
+	var hit=false; 
+	for(var i=0; i<bullets.length; i++)
+	{
+		bullets[i].update(deltaTime);
+		if( bullets [i].position.x - worldOffsetX < 0 ||
+		bullets[i].position.x - wolrdOffsetX > SCREEN_WIDTH)
+		{
+			hit = true;
+		}
+		
+		for(var j=0; j<enemies.length; j++)
+		{
+			if(intersects( bullets[i].position.x, bullets[i].position.y, TILE, TILE,
+			enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true)
+			{
+				enemies.splice(j, 1);
+				hit = ture;
+				score += 1;
+				break;
+			}
+		}
+		if(hit == true)
+		{
+			bullets.splice(i, 1);
+			break;
+		}
+	}
+	
 	drawMap();
 	player.draw();
-
 	
 	
-	//enemy.draw();
+	
 	
 		
 	// update the frame counter 
@@ -234,6 +296,7 @@ function run()
 	{
 	//	context.drawImage(heartImage, 20 + ((heartImage.width+2)*i), 10);
 	}
+	
 }
 initialize();
 

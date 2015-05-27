@@ -18,7 +18,7 @@ var Enemy = function(x, y) {
 
 
 
-Enemy.prototype.draw = function()
+Enemy.prototype.update = function(dt)
 {
 	this.sprite.update(dt);
 	
@@ -30,14 +30,14 @@ Enemy.prototype.draw = function()
 	{
 		var ddx = 0;
 		
-		var tx = pixleToTile(this.position.x);
-		var ty = pixleToTile(this.position.y);
+		var tx = pixelToTile(this.position.x);
+		var ty = pixelToTile(this.position.y);
 		var nx = (this.position.x)%TILE;
 		var ny = (this.position.y)%TILE;
-		var cell = cellAtTIleCoord(LAYER_PLATFORMS, tx, ty);
-		var cellright = cellAtTIleCoord(LAYER_PLATFORMS, tx, + 1, ty);
-		var celldown = cellAtTIleCoord(LAYER_PLATFORMS, tx, ty + 1);
-		var celldiag = cellAtTIleCoord(LAYER_PLATFORMS, tx +1, ty + 1);
+		var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
+		var cellright = cellAtTileCoord(LAYER_PLATFORMS, tx, + 1, ty);
+		var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
+		var celldiag = cellAtTileCoord(LAYER_PLATFORMS, tx +1, ty + 1);
 		
 		if(this.moveRight)
 		{
@@ -56,3 +56,8 @@ Enemy.prototype.draw = function()
 		-ENEMY_MAXDX, ENEMY_MAXDX);
 		}
 	}
+	
+	Enemy.prototype.draw = function()
+{
+	this.sprite.draw(context, this.position.x - worldOffsetX, this.position.y);
+}

@@ -38,7 +38,7 @@ var Player = function() {
 	this.position.set = (9*TILE, 0*TILE );
 	
 	this.width = 159;
-	this.height =163;
+	this.height = 163;
 	
 	this.velocity = new Vector2();
 	
@@ -99,9 +99,20 @@ else if(keyboard.isKeyDown(keyboard.KEY_RIGHT) == true) {
 			}
 		}
 	}
-	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true) {
-		jump = true;
+	if(keyboard.isKeyDown(keyboard.KEY_UP)== true){
+		jump=true;
 	}
+	if(this.cooldownTimer>0)
+	{
+		this.cooldownTimer -=deltaTime;
+	}
+	if(keyboard.isKeyDown(keyboard.KEY_SPACE)==true&&this.cooldownTimer <=0){
+		sfxFire.play();
+		this.cooldownTimer=0.3;
+	   
+	
+	}
+	
 	
 	var wasleft = this.velocity.x < 0;
 	var wasright = this.velocity. x > 0;
@@ -180,21 +191,10 @@ else if (this.velocity.y < 0) {
 	else if (this.velocity.x < 0) {
 		if ((cell && !cellright) || (celldown && !celldiag && ny)) {
 			this.position.x = tileToPixel(tx + 1);
-			this.velocity.x = 0;
+			this.velocity.x = 0;   
 		}
 	}
-	if(keyboard.isKeyDown(keyboard.KEY_UP)== true){
-		jump=ture;
-	}
-	if(this.cooldownTimer>0)
-	{
-		thiscooldownTimer -=deltaTime;
-	}
-	if(keyboard.isKeyDown(keyboard.KEY_SPACE)== true&&this.cooldownTImer <=0){
-		sfxFire.play();
-		this.cooldownTimer=0.3;
-		
-	}
+	
 }
 
 
