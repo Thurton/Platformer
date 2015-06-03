@@ -217,7 +217,7 @@ idx++;
 			buffer: true,
 			volume: 0.3
 		});
-		//musicBackground.play();
+		musicBackground.play();
 		
 		sfxFire = new Howl(
 		{
