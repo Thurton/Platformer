@@ -64,10 +64,11 @@ var enemies = [];
 var bullets = [];	
 var shootTimer = .02	
 
+
 var heart = document.createElement("img");
 var gameOverTimer = 9.22;
-
-
+var BG = document.createElement("img");
+BG.src = "BG.png";
 
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
@@ -248,8 +249,7 @@ function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
 
 function run()
 {
-	
-	context.fillStyle = "#ccc";		
+	context.fillStyle = "#1e90ff";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	var deltaTime = getDeltaTime();
@@ -307,11 +307,11 @@ if(shootTimer > 0)
    
     heart.src = "heart.png";
     if (hp >= 1)
-        context.drawImage(heart, 52, 23);
+        context.drawImage(heart, 10, 23);
     if (hp >= 2)
-        context.drawImage(heart, 52 + (heart.width + 2), 23);
+        context.drawImage(heart, 10 + (heart.width + 5), 23);
     if (hp >= 3)
-        context.drawImage(heart, 52 + ((heart.width + 2) + (heart.width + 2)), 23);
+        context.drawImage(heart, 10 + ((heart.width + 5) + (heart.width + 2)), 23);
     
     
 
