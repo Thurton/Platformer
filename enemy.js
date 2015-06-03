@@ -3,8 +3,15 @@
 var Enemy = function(x, y) {
 	
 	this.sprite = new Sprite ("bat.png");
+	
 	this.sprite.buildAnimation(2, 1, 88, 94, 0.3, [0,1]);
 	this.sprite.setAnimationOffset(0, -35, -40);
+
+	
+	
+	
+	this.width = 30;
+	this.height = 28;
 	
 	this.position = new Vector2();
 	this.position.set(x, y);
@@ -43,12 +50,27 @@ Enemy.prototype.update = function(dt)
 		{
 			if(celldiag && !cellright){
 				ddx = ddx + ENEMY_ACCEL;
+				  
 			}
 			else{
 				this.velocity.x = 0;
 				this.moveRight = false;
 				this.pause = 0.5;
 			}
+			  }
+            if(!this.moveRight)
+            {
+                if(celldown && !cell) {
+                    ddx = ddx - ENEMY_ACCEL; 
+                    
+                }
+                else {
+                    this.velocity.x = 0;
+                    this.moveRight = true;
+                    this.pause = 0.5;
+                    
+                }
+            
 			}
 		
 		this.position.x = Math.floor(this.position.x + (dt * this.velocity.x));

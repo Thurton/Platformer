@@ -21,6 +21,15 @@ function getDeltaTime()
 
 //-------------------- Don't modify anything above here
 
+
+
+
+var STATE_SPLASH = 0;
+var STATE_GAME = 1;
+var STATE_GAMEOVER = 2;
+
+var gameState = STATE_SPLASH;
+
 var SCREEN_WIDTH = canvas.width;
 var SCREEN_HEIGHT = canvas.height;
 var fps = 0;
@@ -32,7 +41,7 @@ var LAYER_PLATFORMS = 1;
 var LAYER_LADDERS = 2;
 var LAYER_OBJECT_ENEMIES = 3;
 var LAYER_OBJECT_TRIGGERS = 4;
-var MAP = { tw: 60, th: 15 };
+var MAP = { tw: 300, th: 15 };
 var TILE = 35;
 var TILESET_TILE = TILE * 2;
 var TILESET_PADDING = 2;
@@ -48,12 +57,15 @@ var FRICTION = MAXDX * 6;
 var JUMP = METER * 1500;
 var score =0;
 var lives = 3;
+var hp =3;
 var ENEMY_MAXDX = METER * 5;
 var ENEMY_ACCEL = ENEMY_MAXDX * 2;
 var enemies = [];
 var bullets = [];	
 var shootTimer = .02	
 
+var heart = document.createElement("img");
+var gameOverTimer = 9.22;
 
 
 
@@ -69,6 +81,10 @@ tileset.src = "tileset.png";
 var player = new Player();
 
 var keyboard = new Keyboard();
+
+
+
+
 
 function cellAtPixelCoord(layer, x, y)
 {
@@ -215,10 +231,24 @@ idx++;
 
 
 	
+function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
+{
+    if(y2 + h2 < y1 ||
+    x2 + w2 < x1 ||
+    x2 > x1 + w1 ||
+    y2 > y1 + h1)
+    {
+        return false;
+    }
+    return true;
+}
+
+
 
 
 function run()
 {
+	
 	context.fillStyle = "#ccc";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
@@ -243,8 +273,8 @@ if(shootTimer > 0)
 	for(var i=0; i<bullets.length; i++)
 	{
 		bullets[i].update(deltaTime);
-		if( bullets [i].position.x - worldOffsetX < 0 ||
-		bullets[i].position.x - wolrdOffsetX > SCREEN_WIDTH)
+		if(bullets [i].position.x - worldOffsetX < 0 ||
+		bullets[i].position.x - worldOffsetX > SCREEN_WIDTH)
 		{
 			hit = true;
 		}
@@ -255,7 +285,7 @@ if(shootTimer > 0)
 			enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true)
 			{
 				enemies.splice(j, 1);
-				hit = ture;
+				hit = true;
 				score += 1;
 				break;
 			}
@@ -265,6 +295,7 @@ if(shootTimer > 0)
 			bullets.splice(i, 1);
 			break;
 		}
+		
 	}
 	
 	drawMap();
@@ -272,6 +303,19 @@ if(shootTimer > 0)
 	
 	
 	
+	
+   
+    heart.src = "heart.png";
+    if (hp >= 1)
+        context.drawImage(heart, 52, 23);
+    if (hp >= 2)
+        context.drawImage(heart, 52 + (heart.width + 2), 23);
+    if (hp >= 3)
+        context.drawImage(heart, 52 + ((heart.width + 2) + (heart.width + 2)), 23);
+    
+    
+
+   
 	
 		
 	// update the frame counter 
