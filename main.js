@@ -217,7 +217,7 @@ idx++;
 			buffer: true,
 			volume: 0.3
 		});
-		musicBackground.play();
+		//musicBackground.play();
 		
 		sfxFire = new Howl(
 		{
@@ -305,14 +305,7 @@ if(shootTimer > 0)
 	
 	
    
-    heart.src = "heart.png";
-    if (hp >= 1)
-        context.drawImage(heart, 10, 23);
-    if (hp >= 2)
-        context.drawImage(heart, 10 + (heart.width + 5), 23);
-    if (hp >= 3)
-        context.drawImage(heart, 10 + ((heart.width + 5) + (heart.width + 2)), 23);
-    
+  
     
 
    
